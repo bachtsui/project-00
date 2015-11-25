@@ -1,1 +1,77 @@
 console.log("Sanity Check");
+
+$(document).ready(function(){
+
+/*	//Kept in to keep on eye on syntax, will remove later
+	Player.prototype= {
+		moveRight:function(currentPosition){
+		}
+	};
+*/
+
+var canvas = document.getElementById("canvas"); //Finds canvas ID in html
+var ctx = canvas.getContext("2d"); //Renders the canvas as a 2D plane
+canvas.width = 400;
+canvas.height = 400;
+
+function Character(positionX, positionY){
+	this.x = positionX;
+	this.y = positionY;
+	this.height = 40;
+	this.width = 40;
+	this.color = "blue";
+}
+
+var playerOne = new Character(20, 20);
+
+var playerTwo = new Character(20, 300);
+
+document.addEventListener('keydown', function(event) { //EventListerner added to document overall
+
+	//68=D moves right
+	if(event.keyCode == 68)  { //Will use WASD for player 1 later
+	playerOne.x += 5;
+
+	//39= Up arrow, move right
+	}else if(event.keyCode == 39) // Arrow keys for player 2 later
+	playerTwo.x += 5;
+});
+
+function renderCanvas(){
+	ctx.fillStyle = "#000000"; //color
+	ctx.fillRect(0, 0, 400, 400);  //Draws out the canvas, I think
+} 
+
+function renderPlayerOne(){ //draws out PlayerOne
+	ctx.fillStyle = "blue";
+	ctx.fillRect(playerOne.x, playerOne.y, playerOne.width, playerOne.height);
+}
+
+function renderPlayerTwo(){ //draws out PlayerTwo
+	ctx.fillStyle = "orange";
+	ctx.fillRect(playerTwo.x, playerTwo.y, playerTwo.width, playerTwo.height);
+}
+
+function fun(){
+	renderCanvas();
+	renderPlayerOne();
+	renderPlayerTwo();
+}
+		
+setInterval(fun, 10);
+
+});
+
+/*
+
+Much of the base code was lifted from a stack overflow question
+http://stackoverflow.com/questions/23585320/how-to-move-object-with-keyboard-in-javascript
+
+Reviwed the concepts that were used though via Google and Eloquent Javascript
+
+To Do:
+Figure how to enable mutiple keypresses at the same time
+Set a win condition, something like if Player position > Canvas Width, they win
+Notify winner
+Reset Button
+*/
