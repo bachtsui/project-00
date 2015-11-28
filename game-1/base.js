@@ -2,6 +2,9 @@ console.log("Sanity Check");
 
 $(document).ready(function(){
 
+var running = true;
+
+
 /*	//Kept in to keep on eye on syntax, will remove later
 	Player.prototype= {
 		moveRight:function(currentPosition){
@@ -19,23 +22,63 @@ function Character(positionX, positionY){
 	this.y = positionY;
 	this.height = 40;
 	this.width = 40;
-	this.color = "blue";
+	//this.color = "blue";
 }
 
 var playerOne = new Character(20, 20);
 
 var playerTwo = new Character(20, 300);
 
-document.addEventListener('keydown', function(event) { //EventListerner added to document overall
+document.addEventListener("keydown", function(event) { //EventListerner added to document overall
 
-	//68=D moves right
-	if(event.keyCode == 68)  { //Will use WASD for player 1 later
-	playerOne.x += 5;
+	var kc = event.keyCode;
+	event.preventDefault(); //Prevents browser from scrolling window
 
-	//39= Up arrow, move right
-	}else if(event.keyCode == 39) // Arrow keys for player 2 later
-	playerTwo.x += 5;
+	if(kc === 68) {
+		Controls.playerOneRight = true;
+	}else if (kc === 39){
+		Controls.playerTwoRight = true;
+	// //68=D moves right
+	// if(event.keyCode == 68)  { //Will use WASD for player 1 later
+	// playerOne.x += 5;
+
+	// //39= Up arrow, move right
+	// }else if(event.keyCode == 39){ // Arrow keys for player 2 later
+	// playerTwo.x += 5;
+
+	}else if(event.keyCode == 89){ // Testing
+	//running = false;
+	}
 });
+
+document.addEventListener("keyup", function(event) {
+
+	var kc = event.keyCode;
+	event.preventDefault(); //Prevents browser from scrolling window
+
+	if(kc === 68) {
+		Controls.playerOneRight = false;
+	}else if (kc === 39){
+		Controls.playerTwoRight = false;
+	}
+});
+
+var Controls = {
+	playerOneRight: false,
+	playerTwoRight: false,
+};
+
+
+function Update(){
+	if(Controls.playerOneRight){
+		playerOne.x += 3;
+	}
+	if(Controls.playerTwoRight){
+		playerTwo.x += 3; 
+	}
+	window.requestAnimationFrame(Update);
+}
+
 
 function renderCanvas(){
 	ctx.fillStyle = "#000000"; //color
@@ -58,9 +101,11 @@ function fun(){
 	renderPlayerTwo();
 }
 		
-setInterval(fun, 10);
+setInterval(fun, 10); //automates a task on a time based trigger
 
+window.requestAnimationFrame(Update);
 });
+
 
 /*
 
