@@ -1,16 +1,6 @@
-console.log("Sanity Check");
-
 $(document).ready(function(){
 
 var running = true;
-
-
-/*	//Kept in to keep on eye on syntax, will remove later
-	Player.prototype= {
-		moveRight:function(currentPosition){
-		}
-	};
-*/
 
 var canvas = document.getElementById("canvas"); //Finds canvas ID in html
 var ctx = canvas.getContext("2d"); //Renders the canvas as a 2D plane
@@ -22,7 +12,6 @@ function Character(positionX, positionY){
 	this.y = positionY;
 	this.height = 40;
 	this.width = 40;
-	//this.color = "blue";
 }
 
 var playerOne = new Character(20, 20);
@@ -34,20 +23,10 @@ document.addEventListener("keydown", function(event) { //EventListerner added to
 	var kc = event.keyCode;
 	event.preventDefault(); //Prevents browser from scrolling window
 
-	if(kc === 68) {
+	if(kc === 68) { // D
 		Controls.playerOneRight = true;
-	}else if (kc === 39){
+	}else if (kc === 39){ //Up Arrow
 		Controls.playerTwoRight = true;
-	// //68=D moves right
-	// if(event.keyCode == 68)  { //Will use WASD for player 1 later
-	// playerOne.x += 5;
-
-	// //39= Up arrow, move right
-	// }else if(event.keyCode == 39){ // Arrow keys for player 2 later
-	// playerTwo.x += 5;
-
-	}else if(event.keyCode == 89){ // Testing
-	//running = false;
 	}
 });
 
@@ -63,6 +42,15 @@ document.addEventListener("keyup", function(event) {
 	}
 });
 
+/*
+The idea behind the keydown and keyup blocks
+is that the program keeps track of what keys
+are being held down using true and false statements.
+
+Got this idea through Eloquent Javascript and 
+Stack Overflow.
+*/
+
 var Controls = {
 	playerOneRight: false,
 	playerTwoRight: false,
@@ -76,9 +64,28 @@ function Update(){
 	if(Controls.playerTwoRight){
 		playerTwo.x += 3; 
 	}
-	window.requestAnimationFrame(Update);
+	if(!winCondtion()){
+		window.requestAnimationFrame(Update);
+		//Built in method, seems like it redraws the canvas continuously from my understanding
+	}	
 }
 
+
+
+function winCondtion(){
+	if(playerOne.x > 400){
+		displayWin("Player One Won!");
+		return true;
+	}else if(playerTwo.x > 400){
+		displayWin(" Player Two Won!");
+		return true;
+	}
+	return false;
+}
+
+function displayWin(winMessage){
+	$("body").append("<p><b>" + winMessage + "</b></p>");
+}
 
 function renderCanvas(){
 	ctx.fillStyle = "#000000"; //color
@@ -95,15 +102,13 @@ function renderPlayerTwo(){ //draws out PlayerTwo
 	ctx.fillRect(playerTwo.x, playerTwo.y, playerTwo.width, playerTwo.height);
 }
 
-function fun(){
+function prepareGame(){
 	renderCanvas();
 	renderPlayerOne();
 	renderPlayerTwo();
 }
 		
-setInterval(fun, 10); //automates a task on a time based trigger
-
-window.requestAnimationFrame(Update);
+setInterval(prepareGame, 10); //automates a task on a time based trigger
 });
 
 
@@ -113,10 +118,4 @@ Much of the base code was lifted from a stack overflow question
 http://stackoverflow.com/questions/23585320/how-to-move-object-with-keyboard-in-javascript
 
 Reviwed the concepts that were used though via Google and Eloquent Javascript
-
-To Do:
-Figure how to enable mutiple keypresses at the same time
-Set a win condition, something like if Player position > Canvas Width, they win
-Notify winner
-Reset Button
 */
