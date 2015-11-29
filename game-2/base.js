@@ -28,7 +28,7 @@ document.addEventListener("keydown", function(event) {
 	}else if (kc === 39){ //Right Arrow
 		Controls.playerTwoRight = true;
 	}else if (kc === 37){ //Left Arrow
-		Controls.playerTwoRight = true;
+		Controls.playerTwoLeft = true;
 	}
 });
 
@@ -43,7 +43,7 @@ document.addEventListener("keyup", function(event) {
 	}else if (kc === 39){ //Right Arrow
 		Controls.playerTwoRight = false;
 	}else if (kc === 37){ //Left Arrow
-		Controls.playerTwoRight = false;
+		Controls.playerTwoLeft = false;
 	}
 });
 
@@ -56,34 +56,35 @@ var Controls = {
 
 
 function Update(){
-	if(Controls.playerOneRight){
+	if(Controls.playerOneRight && playerOne.x < (canvas.width - playerOne.width)){
+		//Prevent square leaving screen, this way also make changing values easier
 		playerOne.x += 3;
 	}
-	if(Controls.playerOneLeft){
+	if(Controls.playerOneLeft && playerOne.x > 0){
 		playerOne.x -= 3;
 	}
-	if(Controls.playerTwoRight){
+	if(Controls.playerTwoRight && playerTwo.x < (canvas.width - playerTwo.width)){
 		playerTwo.x += 3; 
 	}
-	if(Controls.playerTwoLeft){
+	if(Controls.playerTwoLeft && playerTwo.x > 0){
 		playerTwo.x -= 3; 
 	}
-	if(!winCondtion()){
-		window.requestAnimationFrame(Update);
-		//Built in method, seems like it redraws the canvas continuously from my understanding
-	}	
+	window.requestAnimationFrame(Update);
+	// if(!winCondtion()){
+	// 	window.requestAnimationFrame(Update);
+		//Built in method, seems like it redraws the canvas continuously from my understanding	
 }
 
-function winCondtion(){
-	if(playerOne.x > 400){
-		displayWin("Player One Won!");
-		return true;
-	}else if(playerTwo.x > 400){
-		displayWin(" Player Two Won!");
-		return true;
-	}
-	return false;
-}
+// function winCondtion(){
+// 	if(playerOne.x > 400){
+// 		displayWin("Player One Won!");
+// 		return true;
+// 	}else if(playerTwo.x > 400){
+// 		displayWin(" Player Two Won!");
+// 		return true;
+// 	}
+// 	return false;
+// }
 
 // function displayWin(winMessage){
 // 	$("body").append("<p><b>" + winMessage + "</b></p>");
