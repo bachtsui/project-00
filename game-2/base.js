@@ -12,9 +12,16 @@ function Character(positionX, positionY){
 	this.width = 40;
 }
 
+function Bullet(){
+	this.height = 10;
+	this.width = 10;
+}
+
 var playerOne = new Character(180, 20);
+var playerOneBullet = new Bullet();
 
 var playerTwo = new Character(180, 330);
+var playerTwoBullet = new Bullet();
 
 document.addEventListener("keydown", function(event) {
 
@@ -24,12 +31,16 @@ document.addEventListener("keydown", function(event) {
 	if(kc === 68) { // D
 		Controls.playerOneRight = true;
 	}else if (kc === 65){ //A
-		Controls.playerOneLeft=true;
+		Controls.playerOneLeft = true;
 	}else if (kc === 39){ //Right Arrow
 		Controls.playerTwoRight = true;
 	}else if (kc === 37){ //Left Arrow
 		Controls.playerTwoLeft = true;
-	}
+	}else if(kc === 83) { //S
+ 		Controls.playerOneShoot = true; 
+ 	}else if (kc === 32) { //Spacebar
+ 		Controls.playerTwoShoot = true;
+ 	}
 });
 
 document.addEventListener("keyup", function(event) {
@@ -44,14 +55,32 @@ document.addEventListener("keyup", function(event) {
 		Controls.playerTwoRight = false;
 	}else if (kc === 37){ //Left Arrow
 		Controls.playerTwoLeft = false;
-	}
+	}else if(kc === 83) { //S
+ 		Controls.playerOneShoot = false; 
+ 	}else if (kc === 32) { //Spacebar
+ 		Controls.playerTwoShoot = false;
+ 	}
 });
+
+// document.addEventListener("keypress", function(event) {
+
+// 	var kc = event.keyCode;
+
+// 	if(kc === 83) { //S
+// 		Controls.playerOneShoot = true; 
+// 	}else if (kc === 32) { //Spacebar
+// 		Controls.playerTwoShoot = true;
+// 	}
+// });
 
 var Controls = {
 	playerOneRight: false,
 	playerOneLeft: false,
+	playerOneShoot: false,
+
 	playerTwoRight: false,
 	playerTwoLeft: false,
+	playerTwoShoot: false,
 };
 
 
@@ -69,21 +98,20 @@ function Update(){
 	if(Controls.playerTwoLeft && playerTwo.x > 0){
 		playerTwo.x -= 3; 
 	}
+	if (Controls.playerOneShoot){
+		console.log("1S");
+		renderPlayerOneBullet();
+	}
+	if (Controls.playerTwoShoot){
+		console.log("2S");
+		renderPlayerTwoBullet();
+	}
 	window.requestAnimationFrame(Update);
 	// if(!winCondtion()){
-	// 	window.requestAnimationFrame(Update);
-		//Built in method, seems like it redraws the canvas continuously from my understanding	
+	// 	window.requestAnimationFrame(Update);	
 }
 
 // function winCondtion(){
-// 	if(playerOne.x > 400){
-// 		displayWin("Player One Won!");
-// 		return true;
-// 	}else if(playerTwo.x > 400){
-// 		displayWin(" Player Two Won!");
-// 		return true;
-// 	}
-// 	return false;
 // }
 
 // function displayWin(winMessage){
@@ -92,7 +120,7 @@ function Update(){
 
 function renderCanvas(){
 	ctx.fillStyle = "#000000"; //color
-	ctx.fillRect(0, 0, 400, 400);  //Draws out the canvas, I think
+	ctx.fillRect(0, 0, 400, 400);  //Draws out the canvas, (x, y, width, height)
 } 
 
 function renderPlayerOne(){ //draws out PlayerOne
@@ -103,6 +131,16 @@ function renderPlayerOne(){ //draws out PlayerOne
 function renderPlayerTwo(){ //draws out PlayerTwo
 	ctx.fillStyle = "orange";
 	ctx.fillRect(playerTwo.x, playerTwo.y, playerTwo.width, playerTwo.height);
+}
+
+function renderPlayerOneBullet(){
+	ctx.fillStyle = "blue";
+	ctx.fillRect((playerOne.x + 16), (playerOne.y + 50), playerOneBullet.width, playerOneBullet.height);
+}
+
+function renderPlayerTwoBullet(){
+	ctx.fillStyle = "orange";
+	ctx.fillRect((playerTwo.x + 16), (playerTwo.y - 20),playerTwoBullet.width, playerTwoBullet.height);
 }
 
 function prepareGame(){
