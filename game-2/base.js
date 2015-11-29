@@ -1,7 +1,7 @@
 $(document).ready(function(){
 
-var canvas = document.getElementById("canvas"); //Finds canvas ID in html
-var ctx = canvas.getContext("2d"); //Renders the canvas as a 2D plane
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d"); 
 canvas.width = 400;
 canvas.height = 400;
 
@@ -12,18 +12,22 @@ function Character(positionX, positionY){
 	this.width = 40;
 }
 
-var playerOne = new Character(20, 20);
+var playerOne = new Character(180, 20);
 
-var playerTwo = new Character(20, 300);
+var playerTwo = new Character(180, 330);
 
-document.addEventListener("keydown", function(event) { //EventListerner added to document overall
+document.addEventListener("keydown", function(event) {
 
 	var kc = event.keyCode;
 	event.preventDefault(); //Prevents browser from scrolling window
 
 	if(kc === 68) { // D
 		Controls.playerOneRight = true;
-	}else if (kc === 39){ //Up Arrow
+	}else if (kc === 65){ //A
+		Controls.playerOneLeft=true;
+	}else if (kc === 39){ //Right Arrow
+		Controls.playerTwoRight = true;
+	}else if (kc === 37){ //Left Arrow
 		Controls.playerTwoRight = true;
 	}
 });
@@ -31,26 +35,23 @@ document.addEventListener("keydown", function(event) { //EventListerner added to
 document.addEventListener("keyup", function(event) {
 
 	var kc = event.keyCode;
-	event.preventDefault(); //Prevents browser from scrolling window
 
-	if(kc === 68) {
+	if(kc === 68) { // D
 		Controls.playerOneRight = false;
-	}else if (kc === 39){
+	}else if (kc === 65){ //A
+		Controls.playerOneLeft= false;
+	}else if (kc === 39){ //Right Arrow
+		Controls.playerTwoRight = false;
+	}else if (kc === 37){ //Left Arrow
 		Controls.playerTwoRight = false;
 	}
 });
 
-/*
-The idea behind the keydown and keyup blocks
-is that the program keeps track of what keys
-are being held down using true and false statements.
-Got this idea through Eloquent Javascript and 
-Stack Overflow.
-*/
-
 var Controls = {
 	playerOneRight: false,
+	playerOneLeft: false,
 	playerTwoRight: false,
+	playerTwoLeft: false,
 };
 
 
@@ -58,16 +59,20 @@ function Update(){
 	if(Controls.playerOneRight){
 		playerOne.x += 3;
 	}
+	if(Controls.playerOneLeft){
+		playerOne.x -= 3;
+	}
 	if(Controls.playerTwoRight){
 		playerTwo.x += 3; 
+	}
+	if(Controls.playerTwoLeft){
+		playerTwo.x -= 3; 
 	}
 	if(!winCondtion()){
 		window.requestAnimationFrame(Update);
 		//Built in method, seems like it redraws the canvas continuously from my understanding
 	}	
 }
-
-
 
 function winCondtion(){
 	if(playerOne.x > 400){
@@ -80,9 +85,9 @@ function winCondtion(){
 	return false;
 }
 
-function displayWin(winMessage){
-	$("body").append("<p><b>" + winMessage + "</b></p>");
-}
+// function displayWin(winMessage){
+// 	$("body").append("<p><b>" + winMessage + "</b></p>");
+// }
 
 function renderCanvas(){
 	ctx.fillStyle = "#000000"; //color
@@ -109,10 +114,3 @@ setInterval(prepareGame, 10); //automates a task on a time based trigger
 
 window.requestAnimationFrame(Update);
 });
-
-
-/*
-Much of the base code was lifted from a stack overflow question
-http://stackoverflow.com/questions/23585320/how-to-move-object-with-keyboard-in-javascript
-Reviwed the concepts that were used though via Google and Eloquent Javascript
-*/
