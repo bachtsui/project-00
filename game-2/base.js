@@ -125,9 +125,11 @@ function Update(){
 	}
 }
 
-// $("btn").event("onclick", function(
-// 	window.location.reload();
-// 	));
+ $(".btn").click(function() {
+ 	window.location.reload();
+ });
+
+
 
 function displayWin(winMessage){
  	$("body").append("<p><b>" + winMessage + "</b></p>");
