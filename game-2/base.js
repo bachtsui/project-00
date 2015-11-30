@@ -118,9 +118,9 @@ function Update(){
 			bulletArray.splice(bulletArray[i],1);
 		//need to remove bullets, otherwise slowdowns occur
 		}else if(bulletArray[i].player === 1){
-			bulletArray[i].y +=3;
+			bulletArray[i].y +=7;
 		}else if (bulletArray[i].player === 2){
-			bulletArray[i].y -=3;
+			bulletArray[i].y -=7;
 		}
 	}
 }

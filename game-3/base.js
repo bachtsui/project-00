@@ -127,7 +127,7 @@ function setTimer(){
 	setTimeout(function() 
 		{ animating = false;
 		 $("body").append("<p><b> Player Two Won! </b></p>");	
-		 }, 5000);
+		 }, 10000);
 }
 
 function renderCanvas(){
