@@ -80,6 +80,10 @@ function winCondtion(){
 	return false;
 }
 
+ $(".btn").click(function() {
+ 	window.location.reload();
+ });
+
 function displayWin(winMessage){
 	$("body").append("<p><b>" + winMessage + "</b></p>");
 }
