@@ -6,6 +6,8 @@ var ctx = canvas.getContext("2d");
 canvas.width = 400;
 canvas.height = 400;
 
+var animating = true;
+
 function Character(positionX, positionY){
 	this.x = positionX;
 	this.y = positionY;
@@ -78,6 +80,14 @@ var Controls = {
 
 
 function Update(){
+	if(playerOne.x > playerTwo.x &&
+		playerOne.x < (playerTwo.x + playerTwo.width) &&
+		playerOne.y > playerTwo.y &&
+		playerOne.y < (playerTwo.y + playerOne.height)){
+		console.log("Player 1 win");
+		displayWin("Player One Won!");
+		animating = false;
+	} 
 	if(Controls.playerOneRight && playerOne.x < (canvas.width - playerOne.width)){
 		playerOne.x += 3;
 	}
@@ -91,21 +101,29 @@ function Update(){
 		playerOne.y +=3;
 	}
 	if(Controls.playerTwoRight && playerTwo.x < (canvas.width - playerTwo.width)){
-		playerTwo.x += 3; 
+		playerTwo.x += 3.5; 
 	}
 	if(Controls.playerTwoLeft && playerTwo.x > 0){
-		playerTwo.x -= 3; 
+		playerTwo.x -= 3.5; 
 	}
 	if(Controls.playerTwoUp && playerTwo.y > 0){
-		playerTwo.y -=3;
+		playerTwo.y -= 3.5;
 	}
 	if(Controls.playerTwoDown && playerTwo.y < canvas.height - playerTwo.height){
-		playerTwo.y +=3;
+		playerTwo.y += 3.5;
 	}
 }
 
 function displayWin(winMessage){
  	$("body").append("<p><b>" + winMessage + "</b></p>");
+}
+
+function setTimer(){
+	console.log("Timer Running.");
+	setTimeout(function() 
+		{ animating = false;
+		 $("body").append("<p><b> Player Two Won! </b></p>");	
+		 }, 5000);
 }
 
 function renderCanvas(){
@@ -128,8 +146,11 @@ function prepareGame(){
 	renderCanvas();
 	renderPlayerOne();
 	renderPlayerTwo();
-	window.requestAnimationFrame(prepareGame); //used for Win condition
+	if(animating){
+		window.requestAnimationFrame(prepareGame); //used for Win condition
+	}
 }
 
 window.requestAnimationFrame(prepareGame);
+setTimer();
 });

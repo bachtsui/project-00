@@ -35,9 +35,9 @@ function disableShooting(player){
 //setTimeout will execute a block of code after a certain amount of time
 //We use this function to prevent players from rapidly shooting bullets
 
-var playerOne = new Character(180, 20);
+var playerOne = new Character(180, 10);
 
-var playerTwo = new Character(180, 330);
+var playerTwo = new Character(180, 350);
 
 var bulletArray = [];
 
@@ -124,6 +124,10 @@ function Update(){
 		}
 	}
 }
+
+// $("btn").event("onclick", function(
+// 	window.location.reload();
+// 	));
 
 function displayWin(winMessage){
  	$("body").append("<p><b>" + winMessage + "</b></p>");
