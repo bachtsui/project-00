@@ -5,23 +5,41 @@ var ctx = canvas.getContext("2d");
 canvas.width = 400;
 canvas.height = 400;
 
+var animating = true;
+
 function Character(positionX, positionY){
 	this.x = positionX;
 	this.y = positionY;
 	this.height = 40;
 	this.width = 40;
+	this.canShoot = true; //Will use to limit bullets fire timing
 }
 
-function Bullet(){
+function Bullet(x,y,player){
+	this.x = x;
+	this.y = y;
+	this.player = player;
 	this.height = 10;
 	this.width = 10;
 }
 
+function disableShooting(player){
+	if(player === 1){
+		playerOne.canShoot = false;
+		setTimeout(function() { playerOne.canShoot = true; }, 1000);
+	}else if(player === 2){
+		playerTwo.canShoot = false;
+		setTimeout(function() { playerTwo.canShoot = true; }, 1000);
+	}
+}
+//setTimeout will execute a block of code after a certain amount of time
+//We use this function to prevent players from rapidly shooting bullets
+
 var playerOne = new Character(180, 20);
-var playerOneBullet = new Bullet();
 
 var playerTwo = new Character(180, 330);
-var playerTwoBullet = new Bullet();
+
+var bulletArray = [];
 
 document.addEventListener("keydown", function(event) {
 
@@ -36,11 +54,14 @@ document.addEventListener("keydown", function(event) {
 		Controls.playerTwoRight = true;
 	}else if (kc === 37){ //Left Arrow
 		Controls.playerTwoLeft = true;
-	}else if(kc === 83) { //S
- 		Controls.playerOneShoot = true; 
- 	}else if (kc === 32) { //Spacebar
- 		Controls.playerTwoShoot = true;
+	}else if(kc === 83 && playerOne.canShoot) { //S	
+		bulletArray.push(new Bullet(playerOne.x + 16, playerOne.y + 40, 1));
+		disableShooting(1);
+ 	}else if (kc === 32 && playerTwo.canShoot) { //Spacebar
+		bulletArray.push(new Bullet(playerTwo.x + 16, playerTwo.y - 20, 2));
+		disableShooting(2);
  	}
+ 	//Note to self: Creates a new bullet object and adds it to the array
 });
 
 document.addEventListener("keyup", function(event) {
@@ -50,37 +71,20 @@ document.addEventListener("keyup", function(event) {
 	if(kc === 68) { // D
 		Controls.playerOneRight = false;
 	}else if (kc === 65){ //A
-		Controls.playerOneLeft= false;
+		Controls.playerOneLeft = false;
 	}else if (kc === 39){ //Right Arrow
 		Controls.playerTwoRight = false;
 	}else if (kc === 37){ //Left Arrow
 		Controls.playerTwoLeft = false;
-	}else if(kc === 83) { //S
- 		Controls.playerOneShoot = false; 
- 	}else if (kc === 32) { //Spacebar
- 		Controls.playerTwoShoot = false;
  	}
 });
-
-// document.addEventListener("keypress", function(event) {
-
-// 	var kc = event.keyCode;
-
-// 	if(kc === 83) { //S
-// 		Controls.playerOneShoot = true; 
-// 	}else if (kc === 32) { //Spacebar
-// 		Controls.playerTwoShoot = true;
-// 	}
-// });
 
 var Controls = {
 	playerOneRight: false,
 	playerOneLeft: false,
-	playerOneShoot: false,
 
 	playerTwoRight: false,
-	playerTwoLeft: false,
-	playerTwoShoot: false,
+	playerTwoLeft: false
 };
 
 
@@ -98,25 +102,32 @@ function Update(){
 	if(Controls.playerTwoLeft && playerTwo.x > 0){
 		playerTwo.x -= 3; 
 	}
-	if (Controls.playerOneShoot){
-		console.log("1S");
-		renderPlayerOneBullet();
+	for(var i = 0; i < bulletArray.length; i++){
+		if(bulletArray[i].x > playerOne.x && 
+			bulletArray[i].x < (playerOne.x + playerOne.width) &&
+			bulletArray[i].y < (playerOne.y + playerOne.height)){
+			displayWin("Player Two Won!");
+			animating = false;
+		}else if(bulletArray[i].x > playerTwo.x && 
+			bulletArray[i].x < (playerTwo.x + playerTwo.width) &&
+			bulletArray[i].y > playerTwo.y){
+			displayWin("Player One Won!");
+			animating = false;
+		//Collison, need to be fixed though still
+		}else if(bulletArray[i].y > 400 || bulletArray[i].y < 0){
+			bulletArray.splice(bulletArray[i],1);
+		//need to remove bullets, otherwise slowdowns occur
+		}else if(bulletArray[i].player === 1){
+			bulletArray[i].y +=3;
+		}else if (bulletArray[i].player === 2){
+			bulletArray[i].y -=3;
+		}
 	}
-	if (Controls.playerTwoShoot){
-		console.log("2S");
-		renderPlayerTwoBullet();
-	}
-	window.requestAnimationFrame(Update);
-	// if(!winCondtion()){
-	// 	window.requestAnimationFrame(Update);	
 }
 
-// function winCondtion(){
-// }
-
-// function displayWin(winMessage){
-// 	$("body").append("<p><b>" + winMessage + "</b></p>");
-// }
+function displayWin(winMessage){
+ 	$("body").append("<p><b>" + winMessage + "</b></p>");
+}
 
 function renderCanvas(){
 	ctx.fillStyle = "#000000"; //color
@@ -133,23 +144,36 @@ function renderPlayerTwo(){ //draws out PlayerTwo
 	ctx.fillRect(playerTwo.x, playerTwo.y, playerTwo.width, playerTwo.height);
 }
 
-function renderPlayerOneBullet(){
-	ctx.fillStyle = "blue";
-	ctx.fillRect((playerOne.x + 16), (playerOne.y + 50), playerOneBullet.width, playerOneBullet.height);
-}
-
-function renderPlayerTwoBullet(){
-	ctx.fillStyle = "orange";
-	ctx.fillRect((playerTwo.x + 16), (playerTwo.y - 20),playerTwoBullet.width, playerTwoBullet.height);
+function renderBullets(){
+	for(var i = 0; i < bulletArray.length; i++){
+		if(bulletArray[i].player === 1){
+			ctx.fillStyle = "blue";
+		}else if (bulletArray[i].player === 2){
+			ctx.fillStyle = "orange";
+		}
+		ctx.fillRect(bulletArray[i].x, bulletArray[i].y, bulletArray[i].width, bulletArray[i].height);
+	}
 }
 
 function prepareGame(){
+	Update();
 	renderCanvas();
 	renderPlayerOne();
 	renderPlayerTwo();
+	renderBullets();
+	if(animating){
+		window.requestAnimationFrame(prepareGame); //used for Win condition
+	}
 }
-		
-setInterval(prepareGame, 10); //automates a task on a time based trigger
 
-window.requestAnimationFrame(Update);
+window.requestAnimationFrame(prepareGame);
 });
+
+
+/*
+Notes
+Couldn't get keypress to shoot bullet, ask why
+
+Still need to fix up the collison for the squares and bullets,
+not quite right yet.
+*/
